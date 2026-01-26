@@ -1,0 +1,100 @@
+<div class="dashboard-container grid gap-[2rem] overflow-y-auto">
+  <article
+    class="dashboard-card-container grid grid-cols-[repeat(auto-fill,minmax(min(calc(30rem-calc(1.5rem*2)),100%),1fr))] gap-[1.5rem]"
+  >
+    @for (card of dashboardCards; track card.id) {
+      <div
+        class="card bg-white rounded-xl border border-slate-300 p-[2.5rem] grid grid-cols-[1fr_5.5rem] gap-[1.2rem]"
+      >
+        <p class="card-title row-[1] col-[1] text-slate-600 text-[1.8rem]">{{ card.name }}</p>
+        <h2 class="card-data row-[2] col-[1] text-black font-bold text-[2.2rem]">
+          {{ card.data }}
+        </h2>
+        <span
+          class="icon-container row-[1/span_2] col-[2] w-full aspect-square flex items-center justify-between self-center"
+        >
+          <lucide-angular
+            class="w-full h-full flex items-center justify-center text-slate-400"
+            [img]="card.icon"
+          />
+        </span>
+      </div>
+    }
+  </article>
+
+  <div
+    class="grid grid-cols-[repeat(auto-fill,minmax(min(calc(30rem-calc(2*1.5rem)),100%),1fr))] gap-[2.5rem]"
+  >
+    <article
+      class="table-container relative bg-white border border-slate-300 rounded-xl col-[1/span_2]"
+    >
+      <header
+        class="table-header flex items-center justify-between p-[1.2rem] border-b border-slate-300 flex-wrap"
+      >
+        <h2 class="title font-semibold text-[1.8rem]">Today's Schedule</h2>
+        <a href="" class="link text-blue-700 font-semibold">View Full Calendar</a>
+      </header>
+
+      <div class="table-overflow overflow-x-auto">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>Event Name</th>
+              <th>Time</th>
+              <th>Space</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (event of eventListToday; track event.id) {
+              <tr>
+                <td>
+                  <div class="event-detail">
+                    <h2 class="name text-[1.8rem] font-medium whitespace-nowrap lg:whitespace-normal">{{ event.name }}</h2>
+                    <p class="client leading-5 text-[1.5rem] text-slate-600 font-medium">
+                      {{ event.client_name }}
+                    </p>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap lg:whitespace-normal">{{ event.time }}</td>
+                <td>{{ event.space }}</td>
+                <td>
+                  <div
+                    class="status-container p-[0_1rem] rounded-xl text-center font-semibold"
+                    [class]="
+                      event.status == 'Ongoing'
+                        ? 'border-blue-800 bg-blue-300 text-blue-800'
+                        : event.status == 'Preparing'
+                          ? 'border-orange-600 bg-orange-200 text-orange-600'
+                          : event.status == 'Confirmed'
+                            ? 'border-green-700 bg-green-200 text-green-700'
+                            : ''
+                    "
+                  >
+                    {{ event.status }}
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="occupancy-rate-container">
+      <div
+        class="inner-container bg-white border border-slate-300 rounded-xl p-[1.2rem] flex flex-col gap-[3.5rem]"
+      >
+        <h2 class="title text-[1.8rem] text-slate-800 font-semibold">Occupancy Rate</h2>
+        <div class="progress-bar-container flex justify-center">
+          <div class="progress-bar rounded-full bg-slate-300">
+            <div class="data absolute">
+              <h2 class="total-percentage text-[3.5rem] font-bold">85%</h2>
+              <p class="label text-slate-500 text-[1.8rem] leading-5">capacity</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>

@@ -1,3 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "tailwindcss";
+@import 'tailwindcss';
+
+:root {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+}
+
+.wrapper {
+  width: min(90%, 128rem);
+  margin: 0 auto;
+}
+
+.table {
+  thead {
+    tr {
+      background-color: #f0f0f0;
+    }
+    th {
+      text-transform: uppercase;
+      color: #2e2e2e;
+    }
+  }
+  tr {
+    th,
+    td {
+      padding: 1.5rem;
+    }
+  }
+  th {
+    text-align: left;
+  }
+
+  tbody {
+    tr {
+      &:nth-child(even) {
+        background-color: #f1f1f1;
+      }
+      &:not(:last-child){
+        border-bottom: 1px solid #dddddd;
+      }
+    }
+  }
+}

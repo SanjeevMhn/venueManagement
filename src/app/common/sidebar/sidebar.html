@@ -1,0 +1,31 @@
+<aside
+  class="main-sidebar p-[1.5rem] flex flex-col gap[3.2rem] w-[28rem] border-r border-r-slate-300 bg-white h-screen"
+>
+  <button type="button" class="lg:hidden w-[3.5rem] aspect-square flex items-center justify-center ml-auto cursor-pointer" (click)="hideSidebar.emit(true)">
+    <lucide-angular [img]="close" class="w-[80%] aspect-square flex items-center justify-center" />
+  </button>
+  <a href="/" class="company-name p-[2.5rem] pt-0 font-semibold text-[2.5rem]">VenuePro</a>
+
+  <ul class="links-list flex flex-col gap-[0.85rem]">
+    @for (item of menuItems; track item.id) {
+      <li class="link-item">
+        <a
+          [routerLink]="item.route"
+          class="item-link flex gap-[1.2rem] items-center hover:bg-blue-100 rounded-lg cursor-pointer p-[1.2rem_1.5rem] [&.bg-blue-100>.link-name]:text-slate-800 
+          [&.bg-blue-100>.icon-container>lucide-angular>svg]:text-blue-500"
+          routerLinkActive="bg-blue-100"
+        >
+          <span
+            class="icon-container flex items-center justify-center w-[3rem] aspect-square rounded-md"
+          >
+            <lucide-angular
+              [img]="item.icon"
+              class="text-slate-500 w-[90%] aspect-square flex items-center justify-center"
+            />
+          </span>
+          <p class="link-name text-[1.75rem] text-slate-600 font-medium">{{ item.name }}</p>
+        </a>
+      </li>
+    }
+  </ul>
+</aside>

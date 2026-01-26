@@ -1,0 +1,91 @@
+<nav class="main-nav border-b border-b-slate-300 bg-white">
+  <div class="wrapper py-[1.5rem] flex items-center justify-between">
+    <div class="flex items-center gap-[0.5rem] lg:hidden">
+      <button
+        type="button"
+        class="w-[4rem] aspect-square rounded-lg cursor-pointer flex items-center justify-center"
+        (click)="toggleSidebar()"
+      >
+        <lucide-angular
+          [img]="menu"
+          class="w-[75%] aspect-square flex items-center justify-center text-slate-600"
+        />
+      </button>
+      <a href="/" class="company-name pt-0 font-semibold text-[1.8rem]">VenuePro</a>
+    </div>
+    <button
+      type="button"
+      class="w-[4rem] aspect-square rounded-lg bg-slate-200 cursor-pointer flex items-center justify-center lg:hidden ml-auto mr-[1.5rem]"
+    >
+      <lucide-angular
+        [img]="search"
+        class="w-[75%] aspect-square flex items-center justify-center text-slate-600"
+      />
+    </button>
+    <form class="form relative w-[32rem] hidden lg:block">
+      <span
+        class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute left-[0.75rem] top-[50%] transform-[translateY(-50%)]"
+      >
+        <lucide-angular
+          [img]="search"
+          class="text-slate-500 w-full aspect-square flex items-center justify-center"
+        />
+      </span>
+      <input
+        type="text"
+        name="search"
+        id="search"
+        class="form-control bg-slate-200 border-0 outline-slate-300 text-[1.6rem] rounded-lg text-slate-800 p-[0.8rem_1.5rem] pl-[3.5rem] w-full font-medium"
+        placeholder="Search events, spaces..."
+      />
+    </form>
+
+    <ul class="menu-items flex items-center gap-[1.5rem]">
+      <li class="menu-item hidden md:block">
+        <a
+          href=""
+          class="menu-link w-[4rem] aspect-square rounded-lg bg-slate-200 cursor-pointer flex items-center justify-center"
+        >
+          <lucide-angular
+            [img]="notify"
+            class="w-[75%] aspect-square flex items-center justify-center text-slate-600"
+          />
+        </a>
+      </li>
+      <li class="menu-item hidden md:block">
+        <a
+          href=""
+          class="menu-link w-[4rem] aspect-square rounded-lg bg-slate-200 cursor-pointer flex items-center justify-center"
+        >
+          <lucide-angular
+            [img]="message"
+            class="w-[75%] aspect-square flex items-center justify-center text-slate-600"
+          />
+        </a>
+      </li>
+      <li class="menu-item">
+        <a
+          href=""
+          class="grid grid-cols-[4rem_2.5rem] lg:grid-cols-[1fr_5rem_2.5rem] gap-x-[0.5rem] lg:gap-x-[1.2rem] gap-y-[0rem] pl-[1.5rem] border-l border-slate-300"
+        >
+          <p
+            class="user-name col-[1] row-[1] font-medium text-[1.75rem] leading-10 flex items-end hidden lg:flex"
+          >
+            John Doe
+          </p>
+          <p
+            class="user-title col-[1] row-[2]  text-[1.2rem] text-slate-600 font-medium leading-5 hidden lg:flex justify-end"
+          >
+            Admin
+          </p>
+          <span
+            class="img-container w-full aspect-square bg-orange-300 border-2 border-orange-500 lg:col-[2] col-[1] row-[1/span_2] flex self-center rounded-full"
+          ></span>
+          <span class="icon-container aspect-square w-full col-[2] lg:col-[3] row-[1/span_2] flex items-center justify-center self-center">
+            <lucide-angular [img]="chevronDown" class="w-full aspect-square flex items-center justify-center" />
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
