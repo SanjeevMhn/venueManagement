@@ -1,0 +1,128 @@
+@if (getWeeks$ | async; as weeks) {
+  <header class="calendar-header pb-[1.25rem] flex items-center gap-[2.5rem] flex-wrap">
+    @if (currentDate$ | async; as currentDate) {
+      <h2 class="current-date text-[1.8rem] md:text-[2.8rem] font-bold text-slate-800">
+        {{ currentDate | date: 'MMMM y' }}
+      </h2>
+    }
+
+    <div class="date-controller inline-flex items-center [&>*]:cursor-pointer">
+      <button
+        type="button"
+        class="w-[3.5rem] aspect-square flex items-center justify-center bg-white rounded-l-md border-y border-l border-slate-300"
+      >
+        <lucide-angular [img]="chevronLeft" />
+      </button>
+      <button
+        type="button"
+        class="bg-white h-[3.5rem] border border-slate-300 flex items-center justify-center text-[1.5rem] px-[1.2rem]"
+        (click)="gotoToday()"
+      >
+        Today
+      </button>
+      <button
+        type="button"
+        class="w-[3.5rem] aspect-square flex items-center justify-center bg-white rounded-r-md border-y border-r border-slate-300"
+      >
+        <lucide-angular [img]="chevronRight" />
+      </button>
+    </div>
+    <div class="form-group relative isolate bg-white">
+      <input
+        class="date-input z-2 border border-slate-300 p-[0.5rem_1.2rem] cursor-pointer"
+        type="month"
+        name="month"
+        id="month"
+        [formControl]="currentMonthFormControl"
+        (change)="changeMonth($event)"
+      />
+      <span
+        class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute top-[50%] transform-[translateY(-50%)] right-[0.8rem] z-1"
+      >
+        <lucide-angular class="w-full aspect-square text-slate-800" [img]="calendar" />
+      </span>
+    </div>
+    <div
+      class="view-controller inline-flex items-center text-[1.5rem] md:ml-auto [&>*]:cursor-pointer"
+    >
+      @if (viewChange$ | async; as change) {
+        <button
+          type="button"
+          class="bg-white border-y border-l border-slate-300 p-[0.5rem_1.2rem] rounded-l-md"
+          [class]="change.view == 'day' ? 'bg-blue-600! text-white' : ''"
+          (click)="changeCalendarView('day')"
+        >
+          Day
+        </button>
+        <button
+          type="button"
+          class="bg-white border border-slate-300 p-[0.5rem_1.2rem]"
+          [class]="change.view == 'week' ? 'bg-blue-600! text-white' : ''"
+          (click)="changeCalendarView('week')"
+        >
+          Week
+        </button>
+        <button
+          type="button"
+          class="bg-white border-y border-r border-slate-300 p-[0.5rem_1.2rem] rounded-r-md"
+          [class]="change.view == 'month' ? 'bg-blue-600! text-white' : ''"
+          (click)="changeCalendarView('month')"
+        >
+          Month
+        </button>
+      }
+    </div>
+  </header>
+  <article
+    class="calendar-container bg-white border-slate-300 border rounded-xl overflow-y-auto h-[calc(100%-5.5rem)]"
+  >
+    <div
+      class="day-names grid grid-cols-[repeat(7,calc(100%/7))] bg-slate-50 border-b border-slate-300 sticky top-0"
+    >
+      @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track $index) {
+        <div class="day-name text-center py-[1.2rem]">{{ day }}</div>
+      }
+    </div>
+    <div class="calendar-body">
+      @if (weeks.week == null) {
+        @for (week of weeks.group; track $index + 1) {
+          <div
+            class="week grid grid-cols-[repeat(7,calc(100%/7))] [&:not(:first-child)]:border-t [&:not(:first-child)]:border-slate-300 [&:last-child]:border-b border-slate-300"
+          >
+            @for (day of week; track $index + 2) {
+              <ng-container
+                [ngTemplateOutlet]="daysTemplate"
+                [ngTemplateOutletContext]="{ day: day }"
+              />
+            }
+          </div>
+        }
+      } @else {
+        <div
+          class="week grid grid-cols-[repeat(7,calc(100%/7))] [&:not(:first-child)]:border-t [&:not(:first-child)]:border-slate-300 border-b border-slate-300"
+        >
+          @for (day of weeks.group[weeks.week - 1]; track $index + 3) {
+            <ng-container
+              [ngTemplateOutlet]="daysTemplate"
+              [ngTemplateOutletContext]="{ day: day }"
+            />
+          }
+        </div>
+      }
+    </div>
+  </article>
+}
+
+<ng-template #daysTemplate let-day="day">
+  <div
+    class="day aspect-square [&:not(:last-child)]:border-r [&:not(:last-child)]:border-slate-300 p-[1.2rem]"
+    [class]="checkDateForToday(day.fullDate) ? 'border-2! border-blue-600! bg-blue-200!' : ''"
+  >
+    <div class="day-index font-medium">
+      @if (!day.is_current) {
+        {{ day.month }} -
+      }
+      {{ day.dayIndex }}
+    </div>
+  </div>
+</ng-template>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Calendar, Calendars, Clipboard, LayoutDashboard, LucideAngularModule, LucideIconData, Map, Settings, X } from 'lucide-angular';
 
 @Component({
@@ -12,8 +12,9 @@ export class Sidebar {
 
   @Output() hideSidebar = new EventEmitter<boolean>()
 
-  close = X
+  currentRoute = inject(Router)
 
+  close = X
   menuItems: Array<{
     id: number,
     name: string,
@@ -38,12 +39,12 @@ export class Sidebar {
         route: 'spaces',
         icon: Map
       },
-      {
-        id: 4,
-        name: 'Calendar',
-        route: 'calendar',
-        icon: Calendar
-      },
+      // {
+      //   id: 4,
+      //   name: 'Calendar',
+      //   route: 'calendar',
+      //   icon: Calendar
+      // },
       {
         id: 5,
         name: 'Report',

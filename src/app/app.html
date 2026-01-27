@@ -1,15 +1,15 @@
-<main class="main-container relative">
+<main class="main-container relative h-[calc(100vh-7rem)] lg:h-[calc(100vh-8rem)]">
   <app-sidebar
     class="fixed w-[28rem] left-[-30rem] lg:left-0 top-0 h-screen"
     (hideSidebar)="toggleSidebar(false)"
     [class]="sidebarState ? 'left-0! z-50!  transition-all ease-in-out' : ''"
   />
-  <section class="relative lg:ml-[28rem] bg-slate-100" [class]="sidebarState ? 'freeze' : ''">
+  <section class="relative lg:ml-[28rem] bg-slate-100 h-full" [class]="sidebarState ? 'freeze' : ''">
     <app-navbar
       class="fixed top-0 left-0 lg:left-[28rem] w-full lg:w-[calc(100%-28rem)] z-20"
       (toggleSidebarEvent)="toggleSidebar()"
     />
-    <div class="wrapper py-[2.5rem] h-[calc(100%-7rem)] lg:h-[calc(100%-8rem)] overflow-y-auto mt-[7rem]! lg:mt-[8rem]!">
+    <div class="wrapper pt-[2.5rem] h-[calc(100%-2.5rem)] overflow-y-auto mt-[7rem]! lg:mt-[8rem]!">
       <router-outlet />
     </div>
   </section>
