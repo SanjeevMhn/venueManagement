@@ -238,7 +238,7 @@ export class CalendarService {
     this.gotoPrevYear();
   }
 
-  gotoPrevYear() {
+  gotoPrevYear(checkWeek?:boolean) {
     const currentDate = this.currentMonth$.getValue();
     const [year, month] = currentDate.split('-');
     const prevYear = Number(month) > 0 ? year : Number(year) - 1;
@@ -250,6 +250,9 @@ export class CalendarService {
         value: formattedDate,
       },
     });
+    if (checkWeek) {
+      this.selectedWeek$.next(this.totalWeeks);
+    }
   }
 
   gotoNext() {
@@ -265,7 +268,7 @@ export class CalendarService {
     this.gotoNextYear();
   }
 
-  gotoNextYear() {
+  gotoNextYear(checkWeek?: boolean) {
     const currentDate = this.currentMonth$.getValue();
     const [year, month] = currentDate.split('-');
     const nextYear = Number(month) < 11 ? year : Number(year) + 1;
@@ -277,5 +280,8 @@ export class CalendarService {
         value: formattedDate,
       },
     });
+    if (checkWeek) {
+      this.selectedWeek$.next(1);
+    }
   }
 }

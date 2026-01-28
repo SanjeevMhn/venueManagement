@@ -49,7 +49,15 @@
     >
       @if (calendarService.viewChange$ | async; as change) {
         @if (change.view == 'week') {
-          <h3 class="week-number text-[2.4rem] mr-[1.5rem] font-medium">Week {{ weeks.week }}</h3>
+          <h3 class="week-number text-[2.4rem] mr-[1.5rem] font-medium">
+            @if(weeks.week == 1){
+              First Week
+            }@else if(weeks.week == calendarService.totalWeeks){
+              Last Week
+            }@else{
+              Week {{ weeks.week }}
+            }
+          </h3>
         }
 
         <button

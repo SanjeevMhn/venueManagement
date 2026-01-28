@@ -18,7 +18,7 @@
         <button
           type="button"
           class="w-[1.5rem] aspect-square cursor-pointer flex items-center justify-center"
-          (click)="calendarService.gotoPrevYear()"
+          (click)="calendarService.gotoPrevYear(weeks.week !== null)"
         >
           <lucide-angular
             class="w-full aspect-square flex items-center justify-center"
@@ -33,7 +33,7 @@
         <button
           type="button"
           class="w-[1.5rem] aspect-square cursor-pointer flex items-center justify-center"
-          (click)="calendarService.gotoNextYear()"
+          (click)="calendarService.gotoNextYear(weeks.week !== null)"
         >
           <lucide-angular
             class="w-full aspect-square flex items-center justify-center"
