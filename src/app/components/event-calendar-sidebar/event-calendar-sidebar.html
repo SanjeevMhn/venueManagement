@@ -1,0 +1,69 @@
+<div class="events-menu-list flex flex-col gap-[0.85rem] min-w-[100%]">
+  <button
+    type="button"
+    class="cursor-pointer p-[1.2rem_1.5rem_1.2rem_0] flex items-center gap-[1rem]"
+    (click)="showMenu.emit(false)"
+  >
+    <span class="icon-container w-[2.5rem] aspect-square flex items-center justify-center">
+      <lucide-angular
+        class="w-full aspect-square flex items-center justify-center"
+        [img]="chevronLeft"
+      />
+    </span>
+    <span class="title-text text-[1.8rem] font-medium">Events</span>
+  </button>
+  <div class="calendar-small p-[1.5rem] pt-0">
+    @if (calendarService.getWeeks$ | async; as weeks) {
+      <header class="calendar-header flex items-center">
+        <button
+          type="button"
+          class="w-[1.5rem] aspect-square cursor-pointer flex items-center justify-center"
+          (click)="calendarService.gotoPrevYear()"
+        >
+          <lucide-angular
+            class="w-full aspect-square flex items-center justify-center"
+            [img]="chevronLeft"
+          />
+        </button>
+        @if (calendarService.currentDate$ | async; as currentDate) {
+          <h2 class="current-date text-[1.4rem] font-bold text-slate-800 grow text-center">
+            {{ currentDate | date: 'MMMM y' }}
+          </h2>
+        }
+        <button
+          type="button"
+          class="w-[1.5rem] aspect-square cursor-pointer flex items-center justify-center"
+          (click)="calendarService.gotoNextYear()"
+        >
+          <lucide-angular
+            class="w-full aspect-square flex items-center justify-center"
+            [img]="chevronRight"
+          />
+        </button>
+      </header>
+      <div class="calendar-body pt-[1rem] flex flex-col gap-[0.25rem]">
+        <div class="day-names grid grid-cols-[repeat(7,calc(100%/7))]">
+          @for (day of ['S', 'M', 'T', 'W', 'T', 'F', 'S']; track $index) {
+            <div class="day-name text-center font-medium text-[1.2rem]">{{ day }}</div>
+          }
+        </div>
+        <div class="days-container">
+          @for (week of weeks.group; track $index + 1) {
+            <div class="week grid grid-cols-[repeat(7,calc(100%/7))]">
+              @for (day of week; track $index + 3) {
+                <div
+                  class="day aspect-square rounded-full flex items-center justify-center"
+                  [class]="
+                    calendarService.checkDateForToday(day.fullDate) ? 'bg-blue-700 text-white' : ''
+                  "
+                >
+                  <p class="index text-[1.2rem]">{{ day.dayIndex }}</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

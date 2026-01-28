@@ -1,6 +1,6 @@
-@if (getWeeks$ | async; as weeks) {
+@if (calendarService.getWeeks$ | async; as weeks) {
   <header class="calendar-header pb-[1.25rem] flex items-center gap-[2.5rem] flex-wrap">
-    @if (currentDate$ | async; as currentDate) {
+    @if (calendarService.currentDate$ | async; as currentDate) {
       <h2 class="current-date text-[1.8rem] md:text-[2.8rem] font-bold text-slate-800">
         {{ currentDate | date: 'MMMM y' }}
       </h2>
@@ -10,21 +10,21 @@
       <button
         type="button"
         class="w-[3.5rem] aspect-square flex items-center justify-center bg-white rounded-l-md border-y border-l border-slate-300"
-        (click)="gotoPrev()"
+        (click)="calendarService.gotoPrev()"
       >
         <lucide-angular [img]="chevronLeft" />
       </button>
       <button
         type="button"
         class="bg-white h-[3.5rem] border border-slate-300 flex items-center justify-center text-[1.5rem] px-[1.2rem]"
-        (click)="gotoToday()"
+        (click)="calendarService.gotoToday()"
       >
         Today
       </button>
       <button
         type="button"
         class="w-[3.5rem] aspect-square flex items-center justify-center bg-white rounded-r-md border-y border-r border-slate-300"
-        (click)="gotoNext()"
+        (click)="calendarService.gotoNext()"
       >
         <lucide-angular [img]="chevronRight" />
       </button>
@@ -35,8 +35,8 @@
         type="month"
         name="month"
         id="month"
-        [formControl]="currentMonthFormControl"
-        (change)="changeMonth($event)"
+        [formControl]="calendarService.currentMonthFormControl"
+        (change)="calendarService.changeMonth($event)"
       />
       <span
         class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute top-[50%] transform-[translateY(-50%)] right-[0.8rem] z-1"
@@ -47,7 +47,7 @@
     <div
       class="view-controller inline-flex items-center text-[1.5rem] md:ml-auto [&>*]:cursor-pointer"
     >
-      @if (viewChange$ | async; as change) {
+      @if (calendarService.viewChange$ | async; as change) {
 
         @if(change.view == 'week'){
           <h3 class="week-number text-[2.4rem] mr-[1.5rem] font-medium">Week {{weeks.week}}</h3>
@@ -57,7 +57,7 @@
           type="button"
           class="bg-white border-y border-l border-slate-300 p-[0.5rem_1.2rem] rounded-l-md"
           [class]="change.view == 'day' ? 'bg-blue-600! text-white' : ''"
-          (click)="changeCalendarView('day')"
+          (click)="calendarService.changeCalendarView('day')"
         >
           Day
         </button>
@@ -65,7 +65,7 @@
           type="button"
           class="bg-white border border-slate-300 p-[0.5rem_1.2rem]"
           [class]="change.view == 'week' ? 'bg-blue-600! text-white' : ''"
-          (click)="changeCalendarView('week')"
+          (click)="calendarService.changeCalendarView('week')"
         >
           Week
         </button>
@@ -73,7 +73,7 @@
           type="button"
           class="bg-white border-y border-r border-slate-300 p-[0.5rem_1.2rem] rounded-r-md"
           [class]="change.view == 'month' ? 'bg-blue-600! text-white' : ''"
-          (click)="changeCalendarView('month')"
+          (click)="calendarService.changeCalendarView('month')"
         >
           Month
         </button>
@@ -124,7 +124,7 @@
   <div
     class="day aspect-square p-[1.2rem]"
     [class]="
-      checkDateForToday(day.fullDate)
+      calendarService.checkDateForToday(day.fullDate)
         ? 'border-2 border-blue-600 bg-blue-200'
         : '[&:not(:last-child)]:border-r [&:not(:last-child)]:border-slate-300'
     "

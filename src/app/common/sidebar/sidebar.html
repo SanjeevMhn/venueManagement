@@ -10,14 +10,22 @@
   </button>
   <a href="/" class="company-name p-[2.5rem] pt-0 font-semibold text-[2.5rem]">VenuePro</a>
 
-  <div class="multimenu-list">
-    <ul class="links-list flex flex-col gap-[0.85rem]">
+  <div
+    class="multimenu-list flex gap-[1.5rem] transition-all"
+    [class]="
+      currentRoute.url == '/events' && showEventMenu()
+        ? 'transform-[translateX(calc(-1*106%))]'
+        : ''
+    "
+  >
+    <ul class="links-list flex flex-col gap-[0.85rem] min-w-[100%]">
       @for (item of menuItems; track item.id) {
         <li class="link-item">
           <a
             [routerLink]="item.route"
             class="item-link flex gap-[1.2rem] items-center hover:bg-blue-100 rounded-lg cursor-pointer p-[1.2rem_1.5rem] [&.bg-blue-100>.link-name]:text-slate-800 [&.bg-blue-100>.icon-container>lucide-angular>svg]:text-blue-500"
             routerLinkActive="bg-blue-100"
+            (click)="checkRoute(item.route)"
           >
             <span
               class="icon-container flex items-center justify-center w-[3rem] aspect-square rounded-md"
@@ -28,9 +36,20 @@
               />
             </span>
             <p class="link-name text-[1.75rem] text-slate-600 font-medium">{{ item.name }}</p>
+            @if (item.route !== 'dashboard') {
+              <span
+                class="icon-container flex items-center justify-center w-[3rem] aspect-square rounded-md ml-auto"
+              >
+                <lucide-angular
+                  [img]="chevronRight"
+                  class="text-slate-500 w-[90%] aspect-square flex items-center justify-center"
+                />
+              </span>
+            }
           </a>
         </li>
       }
     </ul>
+    <app-event-calendar-sidebar (showMenu)="showEventMenu.set($event)" class="contents" />
   </div>
 </aside>
