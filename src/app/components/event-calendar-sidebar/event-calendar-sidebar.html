@@ -53,9 +53,10 @@
               @for (day of week; track $index + 3) {
                 <div
                   class="day aspect-square rounded-full flex items-center justify-center"
-                  [class]="
-                    calendarService.checkDateForToday(day.fullDate) ? 'bg-blue-700 text-white' : ''
-                  "
+                  [ngClass]="{
+                     'bg-blue-700 text-white' :  calendarService.checkDateForToday(day.fullDate),
+                     'text-slate-400' : !day.is_current
+                    }"
                 >
                   <p class="index text-[1.2rem]">{{ day.dayIndex }}</p>
                 </div>

@@ -11,7 +11,7 @@
   <a href="/" class="company-name p-[2.5rem] pt-0 font-semibold text-[2.5rem]">VenuePro</a>
 
   <div
-    class="multimenu-list flex gap-[1.5rem] transition-all"
+    class="multimenu-list flex gap-[1.5rem] transition-all h-full"
     [class]="
       currentRoute.url == '/events' && showEventMenu()
         ? 'transform-[translateX(calc(-1*106%))]'
@@ -23,9 +23,36 @@
         <li class="link-item">
           <a
             [routerLink]="item.route"
-            class="item-link flex gap-[1.2rem] items-center hover:bg-blue-100 rounded-lg cursor-pointer p-[1.2rem_1.5rem] [&.bg-blue-100>.link-name]:text-slate-800 [&.bg-blue-100>.icon-container>lucide-angular>svg]:text-blue-500"
+            class="item-link gap-[1.2rem] items-center hover:bg-blue-100 rounded-lg cursor-pointer p-[1.2rem_1.5rem] [&.bg-blue-100>.link-name]:text-slate-800 [&.bg-blue-100>.icon-container>lucide-angular>svg]:text-blue-500 hidden lg:flex"
             routerLinkActive="bg-blue-100"
             (click)="checkRoute(item.route)"
+          >
+            <span
+              class="icon-container flex items-center justify-center w-[3rem] aspect-square rounded-md"
+            >
+              <lucide-angular
+                [img]="item.icon"
+                class="text-slate-500 w-[90%] aspect-square flex items-center justify-center"
+              />
+            </span>
+            <p class="link-name text-[1.75rem] text-slate-600 font-medium">{{ item.name }}</p>
+            @if (item.route !== 'dashboard') {
+              <span
+                class="icon-container flex items-center justify-center w-[3rem] aspect-square rounded-md ml-auto"
+              >
+                <lucide-angular
+                  [img]="chevronRight"
+                  class="text-slate-500 w-[90%] aspect-square flex items-center justify-center"
+                />
+              </span>
+            }
+          </a>
+ <a
+            [routerLink]="item.route"
+            class="item-link flex gap-[1.2rem] items-center hover:bg-blue-100 rounded-lg cursor-pointer p-[1.2rem_1.5rem] [&.bg-blue-100>.link-name]:text-slate-800 [&.bg-blue-100>.icon-container>lucide-angular>svg]:text-blue-500 lg:hidden"
+            routerLinkActive="bg-blue-100"
+            (click)="hideSidebarEvent(item.route)"
+
           >
             <span
               class="icon-container flex items-center justify-center w-[3rem] aspect-square rounded-md"
@@ -50,6 +77,12 @@
         </li>
       }
     </ul>
-    <app-event-calendar-sidebar (showMenu)="showEventMenu.set($event)" class="contents" />
+    <app-event-calendar-sidebar (showMenu)="showEventMenu.set($event)" class="contents" [class]="showEventMenu() ? 'transition-all delay-200' : 'invisible delay-0'" />
   </div>
+  <button
+    type="button"
+    class="item-link flex gap-[1.2rem] justify-center items-center bg-blue-600 text-white rounded-lg cursor-pointer p-[1.2rem_1.5rem] [&.bg-blue-100>.link-name]:text-slate-800 [&.bg-blue-100>.icon-container>lucide-angular>svg]:text-blue-500 w-full mt-auto"
+  >
+    Add Event
+  </button>
 </aside>

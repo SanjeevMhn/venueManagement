@@ -67,6 +67,16 @@ export class Sidebar {
   ];
 
   checkRoute(route: string) {
-    if (route == 'events') this.showEventMenu.set(true);
+    if (route == 'events') {
+      this.showEventMenu.set(true)
+    };
+  }
+
+  hideSidebarEvent(route:string){
+    if(route == 'events'){
+      this.showEventMenu.set(true)
+      return
+    }
+    this.hideSidebar.emit(true)
   }
 }

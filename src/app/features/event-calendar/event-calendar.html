@@ -48,9 +48,8 @@
       class="view-controller inline-flex items-center text-[1.5rem] md:ml-auto [&>*]:cursor-pointer"
     >
       @if (calendarService.viewChange$ | async; as change) {
-
-        @if(change.view == 'week'){
-          <h3 class="week-number text-[2.4rem] mr-[1.5rem] font-medium">Week {{weeks.week}}</h3>
+        @if (change.view == 'week') {
+          <h3 class="week-number text-[2.4rem] mr-[1.5rem] font-medium">Week {{ weeks.week }}</h3>
         }
 
         <button
@@ -123,16 +122,13 @@
 <ng-template #daysTemplate let-day="day">
   <div
     class="day aspect-square p-[1.2rem]"
-    [class]="
-      calendarService.checkDateForToday(day.fullDate)
-        ? 'border-2 border-blue-600 bg-blue-200'
-        : '[&:not(:last-child)]:border-r [&:not(:last-child)]:border-slate-300'
-    "
+    [ngClass]="{
+      'border-2 border-blue-600 bg-blue-200': calendarService.checkDateForToday(day.fullDate),
+      '[&:not(:last-child)]:border-r [&:not(:last-child)]:border-slate-300': !calendarService.checkDateForToday(day.fullDate),
+      'bg-slate-200 text-slate-500': !day.is_current,
+    }"
   >
     <div class="day-index font-medium">
-      @if (!day.is_current) {
-        {{ day.month }} -
-      }
       {{ day.dayIndex }}
     </div>
   </div>
