@@ -23,7 +23,7 @@ export class Sidebar {
    hideSidebar = output<boolean>();
 
   currentRoute = inject(Router);
-  showEventMenu = signal(true);
+  showEventMenu = signal(false);
 
   close = X;
   chevronRight = ChevronRight

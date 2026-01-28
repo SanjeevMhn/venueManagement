@@ -11,8 +11,13 @@ body {
 }
 
 .wrapper {
-  width: min(95%, 128rem);
-  margin: 0 auto;
+  padding-inline: 1.5rem;
+}
+
+@media screen and (min-width: 990px){
+  .wrapper{
+    padding-inline: 2.5rem;
+  }
 }
 
 .table {
@@ -40,16 +45,16 @@ body {
       &:nth-child(even) {
         background-color: #f1f1f1;
       }
-      &:not(:last-child){
+      &:not(:last-child) {
         border-bottom: 1px solid #dddddd;
       }
     }
   }
 }
 
-.date-input{
+.date-input {
   position: relative;
-  &::-webkit-calendar-picker-indicator{
+  &::-webkit-calendar-picker-indicator {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -58,6 +63,3 @@ body {
     cursor: pointer;
   }
 }
-
-
-
