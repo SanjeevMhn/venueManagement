@@ -10,6 +10,7 @@
       <button
         type="button"
         class="w-[3.5rem] aspect-square flex items-center justify-center bg-white rounded-l-md border-y border-l border-slate-300"
+        (click)="gotoPrev()"
       >
         <lucide-angular [img]="chevronLeft" />
       </button>
@@ -23,6 +24,7 @@
       <button
         type="button"
         class="w-[3.5rem] aspect-square flex items-center justify-center bg-white rounded-r-md border-y border-r border-slate-300"
+        (click)="gotoNext()"
       >
         <lucide-angular [img]="chevronRight" />
       </button>
@@ -46,6 +48,11 @@
       class="view-controller inline-flex items-center text-[1.5rem] md:ml-auto [&>*]:cursor-pointer"
     >
       @if (viewChange$ | async; as change) {
+
+        @if(change.view == 'week'){
+          <h3 class="week-number text-[2.4rem] mr-[1.5rem] font-medium">Week {{weeks.week}}</h3>
+        }
+
         <button
           type="button"
           class="bg-white border-y border-l border-slate-300 p-[0.5rem_1.2rem] rounded-l-md"
@@ -115,8 +122,12 @@
 
 <ng-template #daysTemplate let-day="day">
   <div
-    class="day aspect-square [&:not(:last-child)]:border-r [&:not(:last-child)]:border-slate-300 p-[1.2rem]"
-    [class]="checkDateForToday(day.fullDate) ? 'border-2! border-blue-600! bg-blue-200!' : ''"
+    class="day aspect-square p-[1.2rem]"
+    [class]="
+      checkDateForToday(day.fullDate)
+        ? 'border-2 border-blue-600 bg-blue-200'
+        : '[&:not(:last-child)]:border-r [&:not(:last-child)]:border-slate-300'
+    "
   >
     <div class="day-index font-medium">
       @if (!day.is_current) {

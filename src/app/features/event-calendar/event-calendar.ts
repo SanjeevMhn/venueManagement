@@ -117,9 +117,9 @@ export class EventCalendar {
             dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
             month: date.toLocaleDateString('en-US', { month: 'short' }),
             fullDate:
-              data.year +
+              prevMonthYear +
               '-' +
-              (Number(data.month) + 1).toString().padStart(2, '0') +
+              (Number(prevMonth) + 1).toString().padStart(2, '0') +
               '-' +
               date.getDate().toString().padStart(2, '0'),
             is_current: false,
@@ -227,6 +227,63 @@ export class EventCalendar {
     this.changeMonth({
       target: {
         value: value,
+      },
+    });
+    if(this.view$.getValue() == 'week'){
+      this.selectedWeek$.next(this.currentWeek + 1)
+    }
+  }
+
+  gotoPrev() {
+    if (this.view$.getValue() == 'week') {
+      if (Number(this.selectedWeek$.getValue()) > 1) {
+        this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) - 1);
+      } else {
+        this.gotoPrevYear();
+        this.selectedWeek$.next(this.totalWeeks);
+      }
+      return;
+    }
+    this.gotoPrevYear();
+  }
+
+  gotoPrevYear() {
+    const currentDate = this.currentMonth$.getValue();
+    const [year, month] = currentDate.split('-');
+    const prevYear = Number(month) > 0 ? year : Number(year) - 1;
+    const prevMonth = Number(month) > 0 ? Number(month) : 12;
+
+    const formattedDate = prevYear + '-' + prevMonth;
+    this.changeMonth({
+      target: {
+        value: formattedDate,
+      },
+    });
+  }
+
+  gotoNext() {
+    if (this.view$.getValue() == 'week') {
+      if (Number(this.selectedWeek$.getValue()) < this.totalWeeks) {
+        this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) + 1);
+      } else {
+        this.gotoNextYear();
+        this.selectedWeek$.next(1);
+      }
+      return;
+    }
+    this.gotoNextYear();
+  }
+
+  gotoNextYear() {
+    const currentDate = this.currentMonth$.getValue();
+    const [year, month] = currentDate.split('-');
+    const nextYear = Number(month) < 11 ? year : Number(year) + 1;
+    const nextMonth = Number(month) < 11 ? Number(month) + 2 : 0;
+
+    const formattedDate = nextYear + '-' + nextMonth;
+    this.changeMonth({
+      target: {
+        value: formattedDate,
       },
     });
   }
