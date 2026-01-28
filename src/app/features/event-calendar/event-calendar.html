@@ -36,7 +36,7 @@
         name="month"
         id="month"
         [formControl]="calendarService.currentMonthFormControl"
-        (change)="calendarService.changeMonth($event)"
+        (change)="calendarService.changeMonth($event, weeks.week !== null)"
       />
       <span
         class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute top-[50%] transform-[translateY(-50%)] right-[0.8rem] z-1"

@@ -196,13 +196,17 @@ export class CalendarService {
     return new Date().setHours(0, 0, 0, 0) == new Date(date).setHours(0, 0, 0, 0);
   }
 
-  changeMonth(event: any) {
+  changeMonth(event: any, checkWeek?:boolean) {
     let [year, month] = event.target.value.split('-');
     let formattedDate =
       year +
       '-' +
       (Number(month) - 1 > 0 ? (Number(month) - 1).toString().padStart(2, '0') : Number(month) - 1);
     this.currentMonth$.next(formattedDate.toString());
+
+    if(checkWeek){
+      this.selectedWeek$.next(1)
+    }
   }
 
   gotoToday() {
