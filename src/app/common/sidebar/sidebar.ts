@@ -1,5 +1,5 @@
 import { Component, inject, output, signal } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   Calendars,
   ChevronRight,

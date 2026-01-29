@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, map, withLatestFrom, tap, combineLatest } from 'rxjs';
 
-type Days = {
+export type Days = {
   day: number;
   dayIndex: number;
   dayName: string;

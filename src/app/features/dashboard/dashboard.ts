@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Banknote, ClipboardClock, Currency, LucideAngularModule, LucideIconData, MessageCircleQuestionMark } from 'lucide-angular';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
