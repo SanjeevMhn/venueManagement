@@ -44,13 +44,20 @@ export class EventCalendar {
     '23:00 PM',
   ];
 
-  eventData: WritableSignal<Array<EventType>> = signal([
+  eventData: WritableSignal<Array<EventType | null>> = signal([
     {
       id: Date.now(),
       name: "Dikchhya's Wedding",
       start_time: '12:00 PM',
       end_time: '17:00 PM',
       date: '2026-01-28',
+    },
+    {
+      id: Date.now(),
+      name: "Dikchhya's Wedding",
+      start_time: '12:00 PM',
+      end_time: '17:00 PM',
+      date: '2026-01-29',
     },
     {
       id: Date.now(),
@@ -67,23 +74,32 @@ export class EventCalendar {
       end_time: '10:00 AM',
       date: '2026-01-27',
     },
-  {
+    {
       id: Date.now(),
       name: 'Kids Yoga Class',
-      start_time: '11:00 AM',
-      end_time: '12:00 PM',
-      date: '2026-01-27',
+      start_time: '09:00 AM',
+      end_time: '10:00 AM',
+      date: '2026-01-29',
+    },
+    {
+      id: Date.now(),
+      name: 'Fintech Meeting',
+      start_time: '08:00 AM',
+      end_time: '10:00 AM',
+      date: '2026-01-25',
     },
   ]);
 
   sortedEvent = computed(() => {
-    return this.eventData().sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return this.eventData().sort(
+      (a, b) => new Date(a!.date).getTime() - new Date(b!.date).getTime(),
+    );
   });
 
   checkEventInCurrentWeek(weekGroup: Array<Days>, event: EventType) {
     return weekGroup.findIndex((week) => week.fullDate == event.date) !== -1
       ? weekGroup.findIndex((week) => week.fullDate == event.date) + 2
-      : false;
+      : -1;
   }
 
   getEventTimeSpan(event: EventType): string {

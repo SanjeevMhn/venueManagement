@@ -162,26 +162,28 @@
         >
           @for (hour of hourList; track hour) {
             <div
-              class="day aspect-video min-w-[6.5rem] lg:min-w-[12.15rem] p-[1.2rem] border-r border-slate-300 border-b font-medium text-right col-[1]"
+              class="hour aspect-video min-w-[6.5rem] lg:min-w-[12.15rem] p-[1.2rem] border-r border-slate-300 border-b font-medium text-right col-[1] relative"
               [class]="`row-[${$index + 1}]`"
             >
               {{ hour }}
             </div>
 
-            @for (event of sortedEvent(); track event.id) {
+            @for (event of sortedEvent(); track $index) {
               @if (
-                checkEventInCurrentWeek(weeks.group[weeks.week - 1], event) &&
+                event !== null &&
+                checkEventInCurrentWeek(weeks.group[weeks.week - 1], event) !== -1 &&
                 event.start_time == hour
               ) {
                 <div
-                  class="day p-[0_0.5rem] min-w-[4.222rem] lg:min-w-[12.15rem]"
+                  class="event-day p-[0.5rem] min-w-[4.222rem] lg:min-w-[12.15rem] border border-slate-300"
                   [style]="
                     `grid-column: ${checkEventInCurrentWeek(weeks.group[weeks.week - 1], event)}; 
                      grid-row: ${getEventTimeSpan(event)}
                     `
                   "
+                  [style.--line-length]="checkEventInCurrentWeek(weeks.group[weeks.week - 1], event)"
                 >
-                  <div class="inner bg-blue-100 h-full p-[1.2rem] border-b-5  border-white">
+                  <div class="inner bg-blue-100 h-full p-[1.2rem]">
                     <h2 class="text-[1.5rem] font-semibold wrap-break-word">{{ event.name }}</h2>
                   </div>
                 </div>

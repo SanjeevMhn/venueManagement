@@ -1,0 +1,22 @@
+.event-day {
+  position: relative;
+  isolation: isolate;
+  z-index: 2;
+
+  &:after,
+  &:before {
+    content: '';
+    position: absolute;
+    width: calc(calc(100% * var(--line-length)) - 95%);
+    right: 1px;
+    height: 1px;
+    background: #cad5e2;
+    z-index: -1;
+  }
+  &:before {
+    top: -1px;
+  }
+  &:after {
+    bottom: -1px;
+  }
+}
