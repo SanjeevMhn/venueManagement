@@ -1,16 +1,9 @@
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Calendar, ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
 import { CalendarService, Days } from '../../services/calendarService/calendar-service';
-
-type EventType = {
-  id: number;
-  name: string;
-  start_time: string;
-  end_time: string;
-  date: string;
-};
+import { EventService, EventType } from '../../services/eventService/event-service';
 
 @Component({
   selector: 'app-event-calendar',
@@ -24,6 +17,7 @@ export class EventCalendar {
   calendar = Calendar;
 
   calendarService = inject(CalendarService);
+  eventService = inject(EventService)
 
   hourList = [
     '08:00 AM',
@@ -43,58 +37,6 @@ export class EventCalendar {
     '22:00 PM',
     '23:00 PM',
   ];
-
-  eventData: WritableSignal<Array<EventType | null>> = signal([
-    {
-      id: Date.now(),
-      name: "Dikchhya's Wedding",
-      start_time: '12:00 PM',
-      end_time: '17:00 PM',
-      date: '2026-01-28',
-    },
-    {
-      id: Date.now(),
-      name: "Dikchhya's Wedding",
-      start_time: '12:00 PM',
-      end_time: '17:00 PM',
-      date: '2026-01-29',
-    },
-    {
-      id: Date.now(),
-      name: 'Company Anniversary',
-      start_time: '09:00 AM',
-      end_time: '12:00 PM',
-      date: '2026-01-26',
-    },
-
-    {
-      id: Date.now(),
-      name: 'Senior Yoga Class',
-      start_time: '08:00 AM',
-      end_time: '10:00 AM',
-      date: '2026-01-27',
-    },
-    {
-      id: Date.now(),
-      name: 'Kids Yoga Class',
-      start_time: '09:00 AM',
-      end_time: '10:00 AM',
-      date: '2026-01-29',
-    },
-    {
-      id: Date.now(),
-      name: 'Fintech Meeting',
-      start_time: '08:00 AM',
-      end_time: '10:00 AM',
-      date: '2026-01-25',
-    },
-  ]);
-
-  sortedEvent = computed(() => {
-    return this.eventData().sort(
-      (a, b) => new Date(a!.date).getTime() - new Date(b!.date).getTime(),
-    );
-  });
 
   checkEventInCurrentWeek(weekGroup: Array<Days>, event: EventType) {
     return weekGroup.findIndex((week) => week.fullDate == event.date) !== -1

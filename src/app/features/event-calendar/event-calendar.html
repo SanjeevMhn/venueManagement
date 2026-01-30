@@ -139,7 +139,7 @@
           >
             @for (day of week; track $index + 2) {
               <div
-                class="day aspect-video p-[1.2rem]"
+                class="day flex flex-col gap-[0.5rem] p-[1.2rem]"
                 [ngClass]="{
                   'border-2 border-blue-600 bg-blue-200': calendarService.checkDateForToday(
                     day.fullDate
@@ -152,6 +152,15 @@
                 <div class="day-index font-medium">
                   {{ day.dayIndex }}
                 </div>
+                <ul class="event-list flex flex-col gap-[0.45rem]">
+                  @for (event of eventService.sortedEvents(); track event!.id) {
+                    @if (event && event.date == day.fullDate) {
+                      <li class="event-detail p-[0.5rem] bg-blue-200 rounded-xl">
+                        <h2 class="text-[1.4rem] leading-6">{{event.name}}</h2>
+                      </li>
+                    }
+                  }
+                </ul>
               </div>
             }
           </div>
@@ -168,7 +177,7 @@
               {{ hour }}
             </div>
 
-            @for (event of sortedEvent(); track $index) {
+            @for (event of eventService.sortedEvents(); track $index) {
               @if (
                 event !== null &&
                 checkEventInCurrentWeek(weeks.group[weeks.week - 1], event) !== -1 &&
@@ -181,39 +190,20 @@
                      grid-row: ${getEventTimeSpan(event)}
                     `
                   "
-                  [style.--line-length]="checkEventInCurrentWeek(weeks.group[weeks.week - 1], event)"
+                  [style.--line-length]="
+                    checkEventInCurrentWeek(weeks.group[weeks.week - 1], event)
+                  "
                 >
-                  <div class="inner bg-blue-100 h-full p-[1.2rem]">
+                  <div class="inner bg-blue-100 h-full p-[1.2rem] flex flex-col gap-[1.5rem]">
                     <h2 class="text-[1.5rem] font-semibold wrap-break-word">{{ event.name }}</h2>
+                    <p class="text-[1.2rem]">({{ event.start_time }} - {{ event.end_time }})</p>
                   </div>
                 </div>
               }
             }
           }
-          <!-- @for (day of weeks.group[weeks.week - 1]; track $index + 3) {
-            <ng-container
-              [ngTemplateOutlet]="daysTemplate"
-              [ngTemplateOutletContext]="{ day: day }"
-            />
-          } -->
         </div>
       }
     </div>
   </article>
 }
-
-<!-- <ng-template #daysTemplate let-day="day">
-  <div
-    class="day aspect-video p-[1.2rem]"
-    [ngClass]="{
-      'border-2 border-blue-600 bg-blue-200': calendarService.checkDateForToday(day.fullDate),
-      '[&:not(:last-child)]:border-r [&:not(:last-child)]:border-slate-300':
-        !calendarService.checkDateForToday(day.fullDate),
-      'bg-slate-100 text-slate-500': !day.is_current,
-    }"
-  >
-    <div class="day-index font-medium">
-      {{ day.dayIndex }}
-    </div>
-  </div>
-</ng-template> -->
