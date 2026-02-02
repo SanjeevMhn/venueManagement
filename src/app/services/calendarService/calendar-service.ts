@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject, map, withLatestFrom, tap, combineLatest } from 'rxjs';
+import { BehaviorSubject, map, withLatestFrom, tap, combineLatest, filter, Subject } from 'rxjs';
 
 export type Days = {
   day: number;
@@ -22,6 +22,9 @@ export class CalendarService {
   totalWeeks = 0;
   currentWeek = 0;
   currentMonthFormControl = new FormControl('');
+  selectedDayView = new BehaviorSubject<boolean>(false);
+  firstDayIndex = 0;
+  lastDayIndex = 0;
 
   currentDate$ = this.currentMonth$.pipe(
     map((date: any) => {
@@ -43,14 +46,26 @@ export class CalendarService {
       };
     }),
     tap(({ view, currentMonth }) => {
-      if (view == 'week') {
+      if (view == 'week' || view == 'day') {
+        if (view == 'day') {
+          this.selectedDayView.next(true);
+        } else {
+          this.selectedDayView.next(false);
+        }
         if (currentMonth == this.currentMonthFormatted.toString()) {
           this.selectedWeek$.next(this.currentWeek + 1);
+          if (view == 'day') {
+            let dayIndex = new Date().getDay();
+            this.dayIndexCounter.next(dayIndex);
+          }
         } else {
           this.selectedWeek$.next(1);
+          this.dayIndexCounter.next(this.firstDayIndex);
         }
       } else {
         this.selectedWeek$.next(null);
+        this.selectedDayView.next(false);
+        this.dayIndexCounter.next(this.firstDayIndex);
       }
     }),
   );
@@ -61,6 +76,8 @@ export class CalendarService {
       let formatted = String(year + '-' + (Number(month) + 1).toString().padStart(2, '0'));
       this.currentMonthFormControl.setValue(formatted);
       let firstDay = new Date(Number(year), Number(month), 1).getDay();
+      this.firstDayIndex = firstDay;
+      this.lastDayIndex = new Date(Number(year), Number(month) + 1, 0).getDay();
       let lastDay = new Date(Number(year), Number(month) + 1, 0).getDate();
       this.totalWeeks = Math.ceil((firstDay + lastDay) / 7);
       return {
@@ -179,6 +196,21 @@ export class CalendarService {
     }),
   );
 
+  dayIndexCounter = new BehaviorSubject<number>(0);
+
+  getSelectedDay$ = combineLatest([
+    this.selectedDayView,
+    this.getWeeks$,
+    this.dayIndexCounter,
+  ]).pipe(
+    filter(([view]) => view),
+    map(([_, weeks, index]) => {
+      return weeks.week == null
+        ? null
+        : (weeks.group[weeks.week - 1].find((week) => week!.day == index) ?? null);
+    }),
+  );
+
   groupDaysByWeeks(days: Array<Days>): Array<Array<Days>> {
     const result = [];
     for (let i = 0; i < days.length; i += 7) {
@@ -196,7 +228,7 @@ export class CalendarService {
     return new Date().setHours(0, 0, 0, 0) == new Date(date).setHours(0, 0, 0, 0);
   }
 
-  changeMonth(event: any, checkWeek?:boolean) {
+  changeMonth(event: any, checkWeek?: boolean) {
     let [year, month] = event.target.value.split('-');
     let formattedDate =
       year +
@@ -204,8 +236,8 @@ export class CalendarService {
       (Number(month) - 1 > 0 ? (Number(month) - 1).toString().padStart(2, '0') : Number(month) - 1);
     this.currentMonth$.next(formattedDate.toString());
 
-    if(checkWeek){
-      this.selectedWeek$.next(1)
+    if (checkWeek) {
+      this.selectedWeek$.next(1);
     }
   }
 
@@ -224,25 +256,43 @@ export class CalendarService {
         value: value,
       },
     });
-    if (this.view$.getValue() == 'week') {
-      this.selectedWeek$.next(this.currentWeek + 1);
-    }
+
+    requestAnimationFrame(() => {
+      if (this.view$.getValue() == 'week' || this.view$.getValue() == 'day') {
+        this.selectedWeek$.next(this.currentWeek + 1);
+        if (this.view$.getValue() == 'day') {
+          let dayIndex = new Date().getDay();
+          this.dayIndexCounter.next(dayIndex);
+        }
+      }
+    });
   }
 
   gotoPrev() {
-    if (this.view$.getValue() == 'week') {
-      if (Number(this.selectedWeek$.getValue()) > 1) {
-        this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) - 1);
+    if (this.view$.getValue() == 'day') {
+      if (this.dayIndexCounter.getValue() > 0) {
+        this.dayIndexCounter.next(Number(this.dayIndexCounter.getValue()) - 1);
       } else {
-        this.gotoPrevYear();
-        this.selectedWeek$.next(this.totalWeeks);
+        this.gotoPrevWeek();
       }
+      return;
+    }
+    if (this.view$.getValue() == 'week') {
+      this.gotoPrevWeek();
       return;
     }
     this.gotoPrevYear();
   }
 
-  gotoPrevYear(checkWeek?:boolean) {
+  gotoPrevWeek() {
+    if (Number(this.selectedWeek$.getValue()) - 1 > 0) {
+      this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) - 1);
+    } else {
+      this.gotoPrevYear();
+    }
+  }
+
+  gotoPrevYear(checkWeek?: boolean) {
     const currentDate = this.currentMonth$.getValue();
     const [year, month] = currentDate.split('-');
     const prevYear = Number(month) > 0 ? year : Number(year) - 1;
@@ -260,16 +310,30 @@ export class CalendarService {
   }
 
   gotoNext() {
-    if (this.view$.getValue() == 'week') {
-      if (Number(this.selectedWeek$.getValue()) < this.totalWeeks) {
-        this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) + 1);
+    if (this.view$.getValue() == 'day') {
+      if (this.dayIndexCounter.getValue() < 6) {
+        this.dayIndexCounter.next(this.dayIndexCounter.getValue() + 1);
       } else {
-        this.gotoNextYear();
-        this.selectedWeek$.next(1);
+        this.dayIndexCounter.next(0);
+        this.gotoNextWeek();
       }
+
+      return;
+    }
+    if (this.view$.getValue() == 'week') {
+      this.gotoNextWeek();
       return;
     }
     this.gotoNextYear();
+  }
+
+  gotoNextWeek() {
+    if (Number(this.selectedWeek$.getValue()) < this.totalWeeks) {
+      this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) + 1);
+    } else {
+      this.gotoNextYear();
+      this.selectedWeek$.next(1);
+    }
   }
 
   gotoNextYear(checkWeek?: boolean) {
@@ -287,5 +351,9 @@ export class CalendarService {
     if (checkWeek) {
       this.selectedWeek$.next(1);
     }
+  }
+
+  getCurrentDayView(weeks: { group: Array<Array<Days>>; week: number | null }) {
+    return weeks.group[weeks.week! - 1][0];
   }
 }

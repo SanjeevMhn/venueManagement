@@ -14,6 +14,13 @@ export class EventService {
   private eventData: WritableSignal<Array<EventType | null>> = signal([
     {
       id: Date.now(),
+      name: 'Ashwariya and Abhishek Engagement',
+      start_time: '09:00 AM',
+      end_time: '13:00 PM',
+      date: '2026-02-02',
+    },
+    {
+      id: Date.now(),
       name: "Dikchhya's Wedding",
       start_time: '12:00 PM',
       end_time: '17:00 PM',
