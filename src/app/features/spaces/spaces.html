@@ -1,0 +1,85 @@
+<header class="main-header grid grid-cols-2">
+  <h2 class="header-text text-[3.2rem] font-bold col-[1] row-[1]">Venue Space Management</h2>
+  <p class="info-text text-[1.5rem] text-slate-600 col-[1] row-[2]">
+    Manage, list and monitor your event spaces in realtime
+  </p>
+
+  <div class="button-container col-[2] row-[1/span_2] flex justify-end items-center">
+    <button
+      class="add-btn p-[1.2rem_1.5rem] rounded-xl bg-blue-700 text-white flex items-center gap-[0.8rem]"
+    >
+      <span class="icon-container w-[2.5rem] h-[2.5rem] flex items-center justity-center">
+        <lucide-angular
+          [img]="add"
+          class="text-white w-full h-full flex items-center justify-center"
+        />
+      </span>
+      <span class="label-text capitalize text-[1.5rem]">Add new space</span>
+    </button>
+  </div>
+</header>
+<nav class="main-nav bg-white rounded-xl border border-slate-400 mt-[1.5rem]">
+  <ul
+    class="spaces-location flex items-center gap-[2.5rem] text-[1.8rem] font-medium text-slate-600 p-[1.2rem] pb-0 border-b-2 border-slate-400"
+  >
+    <li
+      class="space-item pb-[1rem] border-b-4 cursor-pointer"
+      [class]="activeSpaceType() == 'all' ? ' border-blue-500 text-blue-500' : 'border-transparent'"
+      (click)="activeSpaceType.set('all')"
+    >
+      All Spaces
+    </li>
+    <li
+      class="space-item pb-[1rem] border-b-4 cursor-pointer"
+      [class]="
+        activeSpaceType() == 'indoor' ? ' border-blue-500 text-blue-500' : 'border-transparent'
+      "
+      (click)="activeSpaceType.set('indoor')"
+    >
+      Indoor
+    </li>
+    <li
+      class="space-item pb-[1rem] border-b-4 cursor-pointer"
+      [class]="
+        activeSpaceType() == 'outdoor' ? ' border-blue-500 text-blue-500' : 'border-transparent'
+      "
+      (click)="activeSpaceType.set('outdoor')"
+    >
+      Outdoor
+    </li>
+  </ul>
+  <div
+    class="spaces-location flex items-center justify-end gap-[2.5rem] text-[1.8rem] font-medium text-slate-600 p-[1.2rem]"
+  >
+    <select name="" id="" class="capacity-drodown p-[1rem] rounded-xl bg-neutral-200 text-[1.5rem]">
+      <option value="">Capacity</option>
+      <option value="">100</option>
+      <option value="">500</option>
+      <option value="">8000</option>
+      <option value="">12000</option>
+    </select>
+    <select name="" id="" class="capacity-drodown p-[1rem] rounded-xl bg-neutral-200 text-[1.5rem]">
+      <option value="">Price Range</option>
+      <option value="">100</option>
+      <option value="">500</option>
+      <option value="">8000</option>
+      <option value="">12000</option>
+    </select>
+  </div>
+</nav>
+
+<div class="mt-[2.5rem] grid grid-cols-[repeat(auto-fill,minmax(min(40rem,100%),1fr))] gap-[2.5rem]">
+    @for(space of spacesList; track space.id){
+        <div class="border border-slate-400 rounded-xl flex flex-col bg-white">
+            <div class="img-container w-full aspect-video bg-green-300">
+                <img src="" alt="" srcset="">
+            </div>
+            <div class="details p-[1.2rem] grid grid-cols-4">
+                <h2 class="text-[2.2rem] font-medium text-slate-700 col-[1/span_2] row-[1]">{{space.name}}</h2>
+                <span class="capacity text-[1.8rem] col-[1] row-[2]">{{space.capacity}} Guests</span>
+                <span class="dimesion text-[1.8rem] col-[2] row-[2]">{{space.dimension}} sq ft</span>
+                <p class="price text-[2.2rem] font-medium text-blue-600 col-[4] row-[1] justify-self-end">Rs.{{space.price}}</p>
+            </div>
+        </div>
+    }
+</div>
