@@ -25,6 +25,8 @@ export class CalendarService {
   selectedDayView = new BehaviorSubject<boolean>(false);
   firstDayIndex = 0;
   lastDayIndex = 0;
+  prependedDays = 0;
+  appendedDays = 0;
 
   currentDate$ = this.currentMonth$.pipe(
     map((date: any) => {
@@ -111,6 +113,7 @@ export class CalendarService {
     map(({ days, data }) => {
       // prepend previous month's days if the current month first day doesnot start on a sunday
       let firstDay = days[0].day;
+      let prependToFirstWeek: Array<Days> = [];
 
       if (firstDay > 0) {
         let prevMonthYear = Number(data.month) !== 0 ? Number(data.year) : Number(data.year) - 1;
@@ -134,15 +137,16 @@ export class CalendarService {
           });
         }
 
-        let prependToCurrentMonth = prevMonthDays.slice(-firstDay);
-        days = [...prependToCurrentMonth, ...days];
+        prependToFirstWeek = prevMonthDays.slice(-firstDay);
+        days = [...prependToFirstWeek, ...days];
       }
 
-      return { days, data };
+      return { days, data, prependDays: prependToFirstWeek.length };
     }),
-    map(({ days, data }) => {
+    map(({ days, data, prependDays }) => {
       //append next month's days if the last week of the current month does not have 7 days
       let groupedDays = this.groupDaysByWeeks(days);
+      let appendToLastWeek: Array<Days> = [];
       if (groupedDays[groupedDays.length - 1].length < 7) {
         //checking if the last week contains less than 7 days
         let nextMonthYear = Number(data.month) !== 11 ? Number(data.year) : Number(data.year) + 1;
@@ -168,16 +172,16 @@ export class CalendarService {
         }
 
         let sliceNumber = 7 - groupedDays[groupedDays.length - 1].length;
-        let appendToLastWeek = nextMonthDays.slice(0, sliceNumber);
+        appendToLastWeek = nextMonthDays.slice(0, sliceNumber);
 
         groupedDays[groupedDays.length - 1] = [
           ...groupedDays[groupedDays.length - 1],
           ...appendToLastWeek,
         ];
       }
-      return { groupedDays, data };
+      return { groupedDays, data, prependDays, appendDays: appendToLastWeek.length };
     }),
-    map(({ groupedDays, data }) => {
+    map(({ groupedDays, data, prependDays, appendDays }) => {
       // find current week
 
       const year = new Date().getFullYear();
@@ -192,7 +196,13 @@ export class CalendarService {
       return {
         group: groupedDays,
         week: data.week,
+        prependDays,
+        appendDays,
       };
+    }),
+    tap((data) => {
+      this.prependedDays = data.prependDays;
+      this.appendedDays = data.appendDays;
     }),
   );
 
@@ -245,11 +255,14 @@ export class CalendarService {
       }
       if (week == 'start') {
         this.selectedWeek$.next(1);
+        if (this.view$.getValue() == 'day') {
+          this.dayIndexCounter.next(this.prependedDays);
+        }
       }
       if (week == 'end') {
         this.selectedWeek$.next(this.totalWeeks);
         if (this.view$.getValue() == 'day') {
-          this.dayIndexCounter.next(6);
+          this.dayIndexCounter.next(6 - this.appendedDays);
         }
       }
       if (week == 'current') {
@@ -284,10 +297,18 @@ export class CalendarService {
 
   gotoPrev() {
     if (this.view$.getValue() == 'day') {
-      if (this.dayIndexCounter.getValue() > 0) {
-        this.dayIndexCounter.next(this.dayIndexCounter.getValue() - 1);
+      if (this.selectedWeek$.getValue() == 1) {
+        if (this.dayIndexCounter.getValue() - 1 >= this.prependedDays) {
+          this.dayIndexCounter.next(this.dayIndexCounter.getValue() - 1);
+        } else {
+          this.gotoPrevWeek();
+        }
       } else {
-        this.gotoPrevWeek();
+        if (this.dayIndexCounter.getValue() - 1 >= 0) {
+          this.dayIndexCounter.next(this.dayIndexCounter.getValue() - 1);
+        } else {
+          this.gotoPrevWeek();
+        }
       }
       return;
     }
@@ -329,11 +350,20 @@ export class CalendarService {
 
   gotoNext() {
     if (this.view$.getValue() == 'day') {
-      if (this.dayIndexCounter.getValue() < 6) {
-        this.dayIndexCounter.next(this.dayIndexCounter.getValue() + 1);
+      if (this.selectedWeek$.getValue() == this.totalWeeks) {
+        if (this.dayIndexCounter.getValue() < 6 - this.appendedDays) {
+          this.dayIndexCounter.next(this.dayIndexCounter.getValue() + 1);
+        } else {
+          this.dayIndexCounter.next(0);
+          this.gotoNextWeek();
+        }
       } else {
-        this.dayIndexCounter.next(0);
-        this.gotoNextWeek();
+        if (this.dayIndexCounter.getValue() < 6) {
+          this.dayIndexCounter.next(this.dayIndexCounter.getValue() + 1);
+        } else {
+          this.dayIndexCounter.next(0);
+          this.gotoNextWeek();
+        }
       }
 
       return;
