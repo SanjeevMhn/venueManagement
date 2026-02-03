@@ -200,14 +200,17 @@ export class CalendarService {
 
   getSelectedDay$ = combineLatest([
     this.selectedDayView,
-    this.getWeeks$,
     this.dayIndexCounter,
+    this.getWeeks$,
   ]).pipe(
-    filter(([view]) => view),
-    map(([_, weeks, index]) => {
-      return weeks.week == null
-        ? null
-        : (weeks.group[weeks.week - 1].find((week) => week!.day == index) ?? null);
+    map(([view, index, weeks]) => {
+      return view
+        ? weeks.week == null
+          ? null
+          : weeks.group[weeks.week - 1]
+            ? weeks.group[weeks.week - 1].find((week) => week.day == index)
+            : null
+        : null;
     }),
   );
 
@@ -228,16 +231,34 @@ export class CalendarService {
     return new Date().setHours(0, 0, 0, 0) == new Date(date).setHours(0, 0, 0, 0);
   }
 
-  changeMonth(event: any, checkWeek?: boolean) {
+  changeMonth(event: any, week?: 'start' | 'end' | 'current') {
     let [year, month] = event.target.value.split('-');
     let formattedDate =
       year +
       '-' +
       (Number(month) - 1 > 0 ? (Number(month) - 1).toString().padStart(2, '0') : Number(month) - 1);
-    this.currentMonth$.next(formattedDate.toString());
 
-    if (checkWeek) {
-      this.selectedWeek$.next(1);
+    this.currentMonth$.next(formattedDate.toString());
+    if (this.view$.getValue() == 'week' || this.view$.getValue() == 'day') {
+      if (this.currentMonth$.getValue() == formattedDate.toString()) {
+        this.selectedWeek$.next(this.currentWeek + 1);
+      }
+      if (week == 'start') {
+        this.selectedWeek$.next(1);
+      }
+      if (week == 'end') {
+        this.selectedWeek$.next(this.totalWeeks);
+        if (this.view$.getValue() == 'day') {
+          this.dayIndexCounter.next(6);
+        }
+      }
+      if (week == 'current') {
+        this.selectedWeek$.next(this.currentWeek + 1);
+        if (this.view$.getValue() == 'day') {
+          let dayIndex = new Date().getDay();
+          this.dayIndexCounter.next(dayIndex);
+        }
+      }
     }
   }
 
@@ -251,27 +272,20 @@ export class CalendarService {
             .padStart(2, '0')
         : date.getMonth() + 1;
     let value = year + '-' + month;
-    this.changeMonth({
-      target: {
-        value: value,
+    this.changeMonth(
+      {
+        target: {
+          value: value,
+        },
       },
-    });
-
-    requestAnimationFrame(() => {
-      if (this.view$.getValue() == 'week' || this.view$.getValue() == 'day') {
-        this.selectedWeek$.next(this.currentWeek + 1);
-        if (this.view$.getValue() == 'day') {
-          let dayIndex = new Date().getDay();
-          this.dayIndexCounter.next(dayIndex);
-        }
-      }
-    });
+      'current',
+    );
   }
 
   gotoPrev() {
     if (this.view$.getValue() == 'day') {
       if (this.dayIndexCounter.getValue() > 0) {
-        this.dayIndexCounter.next(Number(this.dayIndexCounter.getValue()) - 1);
+        this.dayIndexCounter.next(this.dayIndexCounter.getValue() - 1);
       } else {
         this.gotoPrevWeek();
       }
@@ -281,32 +295,36 @@ export class CalendarService {
       this.gotoPrevWeek();
       return;
     }
-    this.gotoPrevYear();
+    this.gotoPrevMonth();
   }
 
   gotoPrevWeek() {
     if (Number(this.selectedWeek$.getValue()) - 1 > 0) {
+      if (this.view$.getValue() == 'day') {
+        this.dayIndexCounter.next(6);
+      }
       this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) - 1);
     } else {
-      this.gotoPrevYear();
+      this.gotoPrevMonth();
     }
   }
 
-  gotoPrevYear(checkWeek?: boolean) {
+  gotoPrevMonth(checkWeek?: boolean) {
     const currentDate = this.currentMonth$.getValue();
     const [year, month] = currentDate.split('-');
     const prevYear = Number(month) > 0 ? year : Number(year) - 1;
     const prevMonth = Number(month) > 0 ? Number(month) : 12;
 
     const formattedDate = prevYear + '-' + prevMonth;
-    this.changeMonth({
-      target: {
-        value: formattedDate,
+    this.changeMonth(
+      {
+        target: {
+          value: formattedDate,
+        },
       },
-    });
-    if (checkWeek) {
-      this.selectedWeek$.next(this.totalWeeks);
-    }
+      'end',
+    );
+    // this.selectedWeek$.next(this.totalWeeks);
   }
 
   gotoNext() {
@@ -324,33 +342,33 @@ export class CalendarService {
       this.gotoNextWeek();
       return;
     }
-    this.gotoNextYear();
+    this.gotoNextMonth();
   }
 
   gotoNextWeek() {
     if (Number(this.selectedWeek$.getValue()) < this.totalWeeks) {
       this.selectedWeek$.next(Number(this.selectedWeek$.getValue()) + 1);
     } else {
-      this.gotoNextYear();
-      this.selectedWeek$.next(1);
+      this.gotoNextMonth();
+      // this.selectedWeek$.next(1);
     }
   }
 
-  gotoNextYear(checkWeek?: boolean) {
+  gotoNextMonth() {
     const currentDate = this.currentMonth$.getValue();
     const [year, month] = currentDate.split('-');
     const nextYear = Number(month) < 11 ? year : Number(year) + 1;
     const nextMonth = Number(month) < 11 ? Number(month) + 2 : 0;
 
     const formattedDate = nextYear + '-' + nextMonth;
-    this.changeMonth({
-      target: {
-        value: formattedDate,
+    this.changeMonth(
+      {
+        target: {
+          value: formattedDate,
+        },
       },
-    });
-    if (checkWeek) {
-      this.selectedWeek$.next(1);
-    }
+      'start',
+    );
   }
 
   getCurrentDayView(weeks: { group: Array<Array<Days>>; week: number | null }) {
