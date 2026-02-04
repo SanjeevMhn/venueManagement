@@ -14,8 +14,8 @@ body {
   padding-inline: 1.5rem;
 }
 
-@media screen and (min-width: 990px){
-  .wrapper{
+@media screen and (min-width: 990px) {
+  .wrapper {
     padding-inline: 2.5rem;
   }
 }
@@ -61,5 +61,42 @@ body {
     height: 100%;
     opacity: 0;
     cursor: pointer;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  .form-row {
+    display: grid;
+    gap: 1.5rem;
+    &.two-cols {
+      grid-template-columns: 1fr;
+    }
+    &.three-cols {
+      grid-template-columns: 1fr;
+    }
+    &.four-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .form {
+    .form-row {
+      display: grid;
+      gap: 1.5rem;
+      &.two-cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      &.three-cols {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      &.four-cols {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
   }
 }

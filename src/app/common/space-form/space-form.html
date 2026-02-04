@@ -1,0 +1,74 @@
+<header
+  class="main-header bg-white rounded-xl p-[1.2rem_2.5rem] border border-slate-300 grid grid-cols-5 gap-x-[1.2rem] gap-y-[0.5rem]"
+>
+  <h2 class="text-[2.8rem] font-bold row-[1] col-[1/span_3]">Add New Venue</h2>
+  <p class="text-[1.5rem] text-neutral-500 row-[2] col-[1/span_3]">
+    Configure your new venue details and see how it appears in the market place.
+  </p>
+  <div class="btn-container row-[1/span_2] col-[4] flex items-center">
+    <button
+      type="button"
+      class="btn p-[0.5rem_1rem] bg-white border border-neutral-400 rounded-xl w-full cursor-pointer"
+    >
+      Save Draft
+    </button>
+  </div>
+  <div class="btn-container row-[1/span_2] col-[5] flex items-center">
+    <button
+      type="button"
+      class="btn p-[0.5rem_1rem] bg-blue-700 text-white border border-blue-700 rounded-xl w-full cursor-pointer"
+    >
+      Publish Space
+    </button>
+  </div>
+</header>
+<div class="main-container mt-[1.5rem] flex gap-[2.5rem]">
+  <div class="form-container bg-white border border-neutral-300 rounded-xl">
+    <form action="" class="p-[2.5rem] form">
+      <h2 class="text-[2rem] font-semibold">General Information</h2>
+      <div class="form-group flex flex-col gap-[0.8rem]">
+        <label for="name" class="form-label font-medium">Space Name</label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+          placeholder="e.g. Grand Ballroom"
+        />
+      </div>
+      <div class="form-row two-cols">
+        <div class="form-group flex flex-col gap-[0.8rem]">
+          <label for="name" class="form-label font-medium">Space Type</label>
+          <select
+            name="name"
+            id="name"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+          >
+            <option value="indoor">Indoor</option>
+            <option value="indoor">Outdoor</option>
+          </select>
+        </div>
+        <div class="form-group flex flex-col gap-[0.8rem]">
+          <label for="name" class="form-label font-medium">Space Dimensions (sq.ft.)</label>
+          <input
+            type="number"
+            name="name"
+            id="name"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            placeholder="0.00"
+          />
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          name="description"
+          id="description"
+          class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+          rows="5"
+          placeholder="Space Description"
+        ></textarea>
+      </div>
+    </form>
+  </div>
+</div>
