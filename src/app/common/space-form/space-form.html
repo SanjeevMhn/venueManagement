@@ -22,53 +22,244 @@
     </button>
   </div>
 </header>
-<div class="main-container mt-[1.5rem] flex gap-[2.5rem]">
-  <div class="form-container bg-white border border-neutral-300 rounded-xl">
-    <form action="" class="p-[2.5rem] form">
-      <h2 class="text-[2rem] font-semibold">General Information</h2>
-      <div class="form-group flex flex-col gap-[0.8rem]">
-        <label for="name" class="form-label font-medium">Space Name</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
-          placeholder="e.g. Grand Ballroom"
-        />
-      </div>
-      <div class="form-row two-cols">
+<div class="main-container mt-[1.5rem] grid grid-cols-4 gap-[2.5rem]">
+  <ul
+    class="multi-step-form-option-list flex justify-center gap-[5rem] p-[1.5rem] border border-neutral-300 bg-white row-[1] col-[1/span_4] rounded-xl"
+  >
+    @for (step of multiStepList(); track step.id) {
+      <li
+        class="step flex flex-col items-center gap-[0.8rem] cursor-pointer"
+        [class.completed]="step.completed"
+        [class.active]="step.active"
+        (click)="changeActiveStep(step.id)"
+      >
+        <span class="icon-container w-[3.5rem] aspect-square grid place-items-center rounded-full">
+          @if (!step.completed) {
+            <lucide-angular
+              [img]="step.icon"
+              class="w-[90%] aspect-square grid place-items-center"
+            />
+          } @else {
+            <lucide-angular
+              [img]="checkIcon"
+              class="w-[90%] aspect-square grid place-items-center"
+            />
+          }
+        </span>
+        <span
+          class="label-text capitalize font-semibold text-[1.6rem] text-neutral-600 text-center"
+          >{{ step.name }}</span
+        >
+        @if (step.completed) {
+          <span class="info-text row-[2] col-[2] text-neutral-400 text-[1.5rem]">Completed</span>
+        }
+      </li>
+    }
+  </ul>
+  <div
+    class="scroll-wrapper bg-white border border-neutral-300 rounded-xl col-[1/span_2] row-[2] overflow-x-auto no-scrollbar"
+  >
+    <div
+      class="form-container flex transition-all"
+      [style]="`transform: translateX(calc(-${currentActiveStepId() - 1}*100%))`"
+    >
+      <form class="p-[2.5rem] form flex-[0_0_100%]">
+        <h2 class="text-[2rem] font-semibold">General Information</h2>
         <div class="form-group flex flex-col gap-[0.8rem]">
-          <label for="name" class="form-label font-medium">Space Type</label>
-          <select
-            name="name"
-            id="name"
-            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
-          >
-            <option value="indoor">Indoor</option>
-            <option value="indoor">Outdoor</option>
-          </select>
-        </div>
-        <div class="form-group flex flex-col gap-[0.8rem]">
-          <label for="name" class="form-label font-medium">Space Dimensions (sq.ft.)</label>
+          <label for="name" class="form-label font-medium">Space Name</label>
           <input
-            type="number"
+            type="text"
             name="name"
             id="name"
             class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
-            placeholder="0.00"
+            placeholder="e.g. Grand Ballroom"
           />
         </div>
-      </div>
-      <div class="form-row">
-        <label for="description" class="form-label">Description</label>
-        <textarea
-          name="description"
-          id="description"
-          class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
-          rows="5"
-          placeholder="Space Description"
-        ></textarea>
-      </div>
-    </form>
+        <div class="form-row two-cols">
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Type</label>
+            <select
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            >
+              <option value="indoor">Indoor</option>
+              <option value="indoor">Outdoor</option>
+            </select>
+          </div>
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Dimensions (sq.ft.)</label>
+            <input
+              type="number"
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            name="description"
+            id="description"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            rows="5"
+            placeholder="Space Description"
+          ></textarea>
+        </div>
+      </form>
+      <form class="p-[2.5rem] form flex-[0_0_100%]">
+        <h2 class="text-[2rem] font-semibold">General Information 2</h2>
+        <div class="form-group flex flex-col gap-[0.8rem]">
+          <label for="name" class="form-label font-medium">Space Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            placeholder="e.g. Grand Ballroom"
+          />
+        </div>
+        <div class="form-row two-cols">
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Type</label>
+            <select
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            >
+              <option value="indoor">Indoor</option>
+              <option value="indoor">Outdoor</option>
+            </select>
+          </div>
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Dimensions (sq.ft.)</label>
+            <input
+              type="number"
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            name="description"
+            id="description"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            rows="5"
+            placeholder="Space Description"
+          ></textarea>
+        </div>
+      </form>
+      <form class="p-[2.5rem] form flex-[0_0_100%]">
+        <h2 class="text-[2rem] font-semibold">General Information 3</h2>
+        <div class="form-group flex flex-col gap-[0.8rem]">
+          <label for="name" class="form-label font-medium">Space Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            placeholder="e.g. Grand Ballroom"
+          />
+        </div>
+        <div class="form-row two-cols">
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Type</label>
+            <select
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            >
+              <option value="indoor">Indoor</option>
+              <option value="indoor">Outdoor</option>
+            </select>
+          </div>
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Dimensions (sq.ft.)</label>
+            <input
+              type="number"
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            name="description"
+            id="description"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            rows="5"
+            placeholder="Space Description"
+          ></textarea>
+        </div>
+      </form>
+      <form class="p-[2.5rem] form flex-[0_0_100%]">
+        <h2 class="text-[2rem] font-semibold">General Information 4</h2>
+        <div class="form-group flex flex-col gap-[0.8rem]">
+          <label for="name" class="form-label font-medium">Space Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            placeholder="e.g. Grand Ballroom"
+          />
+        </div>
+        <div class="form-row two-cols">
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Type</label>
+            <select
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            >
+              <option value="indoor">Indoor</option>
+              <option value="indoor">Outdoor</option>
+            </select>
+          </div>
+          <div class="form-group flex flex-col gap-[0.8rem]">
+            <label for="name" class="form-label font-medium">Space Dimensions (sq.ft.)</label>
+            <input
+              type="number"
+              name="name"
+              id="name"
+              class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            name="description"
+            id="description"
+            class="form-control border border-neutral-300 rounded-md p-[0.5rem_1.3rem]"
+            rows="5"
+            placeholder="Space Description"
+          ></textarea>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div
+    class="live-preview-container row-[2] col-[3/-1] flex flex-col gap-[1.5rem]"
+  >
+    <div class="live-preview-icon flex items-center gap-[0.5rem]">
+      <div
+        class="live w-[1.2rem] aspect-square rounded-full bg-green-400 shadow-xl shadow-green-200"
+      ></div>
+      <p class="label-text text-[1.5rem] font-medium text-neutral-500">Live Preview</p>
+    </div>
+
+    <div class="preview-container ] bg-white border border-neutral-300 rounded-xl grow"></div>
   </div>
 </div>
