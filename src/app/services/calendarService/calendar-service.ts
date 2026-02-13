@@ -1,6 +1,16 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject, map, withLatestFrom, tap, combineLatest, filter, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  map,
+  withLatestFrom,
+  tap,
+  combineLatest,
+  filter,
+  Subject,
+  switchMap,
+  of,
+} from 'rxjs';
 
 export type Days = {
   day: number;
@@ -16,7 +26,18 @@ export type Days = {
 })
 export class CalendarService {
   currentMonthFormatted = new Date().getFullYear() + '-' + new Date().getMonth();
+  currentDateFormatted =
+    new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate();
+
   currentMonth$ = new BehaviorSubject<string>(this.currentMonthFormatted.toString());
+  currentSelectedDate$ = new BehaviorSubject<string | null>(null);
+
+  currentState$ = combineLatest([this.currentMonth$, this.currentSelectedDate$]).pipe(
+    switchMap(([month, date]) => {
+      return date == null ? of(month) : of(date);
+    }),
+  );
+
   selectedWeek$ = new BehaviorSubject<number | null>(null);
   view$ = new BehaviorSubject<'day' | 'week' | 'month'>('month');
   totalWeeks = 0;
@@ -49,6 +70,18 @@ export class CalendarService {
     }),
     tap(({ view, currentMonth }) => {
       if (view == 'week' || view == 'day') {
+        let [year, month] = currentMonth.split('-');
+        let date = new Date();
+        date.setFullYear(Number(year));
+        date.setMonth(Number(month));
+        let formatted =
+          year +
+          '-' +
+          month.toString().padStart(2, '0') +
+          '-' +
+          date.getDate().toString().padStart(2, '0');
+        this.currentSelectedDate$.next(formatted);
+
         if (view == 'day') {
           this.selectedDayView.next(true);
         } else {
@@ -72,19 +105,30 @@ export class CalendarService {
     }),
   );
 
-  getWeeks$ = combineLatest([this.currentMonth$, this.selectedWeek$]).pipe(
+  getWeeks$ = combineLatest([this.currentState$, this.selectedWeek$]).pipe(
     map(([date, week]) => {
-      let [year, month] = date.split('-');
-      let formatted = String(year + '-' + (Number(month) + 1).toString().padStart(2, '0'));
+      // let [year, month] = date.split('-');
+      let dateArray = date.split('-');
+      let formatted;
+      if (dateArray.length == 3) {
+        formatted =
+          String(dateArray[0] + '-' + (Number(dateArray[1]) + 1).toString().padStart(2, '0')) +
+          '-' +
+          dateArray[2].toString().padStart(2, '0');
+      } else {
+        formatted = String(
+          dateArray[0] + '-' + (Number(dateArray[1]) + 1).toString().padStart(2, '0'),
+        );
+      }
       this.currentMonthFormControl.setValue(formatted);
-      let firstDay = new Date(Number(year), Number(month), 1).getDay();
+      let firstDay = new Date(Number(dateArray[0]), Number(dateArray[1]), 1).getDay();
       this.firstDayIndex = firstDay;
-      this.lastDayIndex = new Date(Number(year), Number(month) + 1, 0).getDay();
-      let lastDay = new Date(Number(year), Number(month) + 1, 0).getDate();
+      this.lastDayIndex = new Date(Number(dateArray[0]), Number(dateArray[1]) + 1, 0).getDay();
+      let lastDay = new Date(Number(dateArray[0]), Number(dateArray[1]) + 1, 0).getDate();
       this.totalWeeks = Math.ceil((firstDay + lastDay) / 7);
       return {
-        year: year,
-        month: month,
+        year: dateArray[0],
+        month: dateArray[1],
         lastDay: lastDay,
         week: week,
       };
@@ -239,6 +283,22 @@ export class CalendarService {
 
   checkDateForToday(date: string) {
     return new Date().setHours(0, 0, 0, 0) == new Date(date).setHours(0, 0, 0, 0);
+  }
+
+  changeDate(event: any) {
+    let [year, month, day] = event.target.value.split('-');
+    let formattedDate =
+      year +
+      '-' +
+      (Number(month) - 1 > 0
+        ? (Number(month) - 1).toString().padStart(2, '0')
+        : Number(month) - 1) +
+      '-' +
+      day.toString().padStart(2, '0');
+
+    this.currentSelectedDate$.next(formattedDate);
+    this.selectedDayView.next(true);
+    this.dayIndexCounter.next(day)
   }
 
   changeMonth(event: any, week?: 'start' | 'end' | 'current') {
