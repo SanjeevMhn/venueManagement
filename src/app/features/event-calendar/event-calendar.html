@@ -31,25 +31,38 @@
         <lucide-angular [img]="chevronRight" />
       </button>
     </div>
-    <div class="form-group relative isolate bg-white">
-      <input
-        class="date-input z-2 border border-slate-300 p-[0.5rem_1.2rem] cursor-pointer"
-        type="month"
-        name="month"
-        id="month"
-        [formControl]="calendarService.currentMonthFormControl"
-        (change)="calendarService.changeMonth($event, 'start')"
-      />
-      <span
-        class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute top-[50%] transform-[translateY(-50%)] right-[0.8rem] z-1"
+
+    @if (calendarService.viewChange$ | async; as change) {
+      <div class="form-group relative isolate bg-white">
+        @if (change.view == 'month') {
+          <input
+            class="date-input z-2 border border-slate-300 p-[0.5rem_1.2rem] cursor-pointer"
+            type="month"
+            name="month"
+            id="month"
+            [formControl]="calendarService.currentMonthFormControl"
+            (change)="calendarService.changeMonth($event, 'start')"
+          />
+        } @else {
+          <input
+            class="date-input z-2 border border-slate-300 p-[0.5rem_1.2rem] cursor-pointer"
+            type="date"
+            name="month"
+            id="month"
+            [formControl]="calendarService.currentMonthFormControl"
+            (change)="gotoDay($event)"
+          />
+        }
+
+        <span
+          class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute top-[50%] transform-[translateY(-50%)] right-[0.8rem] z-1"
+        >
+          <lucide-angular class="w-full aspect-square text-slate-800" [img]="calendar" />
+        </span>
+      </div>
+      <div
+        class="view-controller inline-flex items-center text-[1.5rem] md:ml-auto [&>*]:cursor-pointer"
       >
-        <lucide-angular class="w-full aspect-square text-slate-800" [img]="calendar" />
-      </span>
-    </div>
-    <div
-      class="view-controller inline-flex items-center text-[1.5rem] md:ml-auto [&>*]:cursor-pointer"
-    >
-      @if (calendarService.viewChange$ | async; as change) {
         @if (change.view == 'week') {
           <h3 class="week-number text-[1.6rem] lg:text-[2.4rem] mr-[1.5rem] font-medium">
             @if (weeks.week == 1) {
@@ -86,8 +99,8 @@
         >
           Month
         </button>
-      }
-    </div>
+      </div>
+    }
   </header>
   <article
     class="calendar-container bg-white border-slate-300 border rounded-xl flex flex-col max-h-[calc(100%-5.5rem)] overflow-x-auto"

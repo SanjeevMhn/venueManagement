@@ -17,7 +17,7 @@ export class EventCalendar {
   calendar = Calendar;
 
   calendarService = inject(CalendarService);
-  eventService = inject(EventService)
+  eventService = inject(EventService);
 
   hourList = [
     '08:00 AM',
@@ -46,5 +46,17 @@ export class EventCalendar {
 
   getEventTimeSpan(event: EventType): string {
     return `${this.hourList.findIndex((hr) => hr == event.start_time) + 1} / ${this.hourList.findIndex((hr) => hr == event.end_time) + 2}`;
+  }
+
+  gotoDay(event: any) {
+    let date = event.target.value;
+    let weekIndex= this.calendarService.groupedDays.findIndex((weeks: Array<Days>) => {
+      return weeks.find((wk: Days) => wk.fullDate == date);
+    });
+    let day = this.calendarService.groupedDays[weekIndex].find((wk: Days) => wk.fullDate == date)
+    console.log(weekIndex, day)
+    if (day) {
+      this.calendarService.getCurrentSelectedDate(day);
+    }
   }
 }

@@ -17,6 +17,7 @@ export type Days = {
 export class CalendarService {
   currentMonthFormatted = new Date().getFullYear() + '-' + new Date().getMonth();
   currentMonth$ = new BehaviorSubject<string>(this.currentMonthFormatted.toString());
+  currentFullDate: string | null | undefined = null;
   selectedWeek$ = new BehaviorSubject<number | null>(null);
   view$ = new BehaviorSubject<'day' | 'week' | 'month'>('month');
   totalWeeks = 0;
@@ -27,6 +28,7 @@ export class CalendarService {
   lastDayIndex = 0;
   prependedDays = 0;
   appendedDays = 0;
+  groupedDays: Array<Array<Days>> = [];
 
   currentDate$ = this.currentMonth$.pipe(
     map((date: any) => {
@@ -179,6 +181,7 @@ export class CalendarService {
           ...appendToLastWeek,
         ];
       }
+
       return { groupedDays, data, prependDays, appendDays: appendToLastWeek.length };
     }),
     map(({ groupedDays, data, prependDays, appendDays }) => {
@@ -203,6 +206,7 @@ export class CalendarService {
     tap((data) => {
       this.prependedDays = data.prependDays;
       this.appendedDays = data.appendDays;
+      this.groupedDays = data.group;
     }),
   );
 
@@ -403,5 +407,27 @@ export class CalendarService {
 
   getCurrentDayView(weeks: { group: Array<Array<Days>>; week: number | null }) {
     return weeks.group[weeks.week! - 1][0];
+  }
+
+  getCurrentSelectedDate(date: Days) {
+    this.selectedDayView.next(true);
+    this.view$.next('day');
+    let dateweek = this.groupedDays.findIndex((week: Array<Days>) => {
+      return week.find((wk: Days) => wk.fullDate == date.fullDate);
+    });
+
+    let index = this.groupedDays.findIndex((week: Array<Days>) => {
+      return week.find((wk: Days) => wk.fullDate == date.fullDate);
+    });
+
+    let fullDate = this.groupedDays[index].find((day) => day.fullDate == date.fullDate)?.fullDate;
+    this.currentFullDate = fullDate;
+
+    requestAnimationFrame(() => {
+      this.currentMonthFormControl.setValue(date.fullDate);
+    });
+
+    this.selectedWeek$.next(dateweek + 1);
+    this.dayIndexCounter.next(date.day);
   }
 }

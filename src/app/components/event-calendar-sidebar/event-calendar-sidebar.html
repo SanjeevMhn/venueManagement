@@ -52,13 +52,20 @@
             <div class="week grid grid-cols-[repeat(7,calc(100%/7))]">
               @for (day of week; track $index + 3) {
                 <div
-                  class="day aspect-square rounded-full flex items-center justify-center"
+                  class="day aspect-square rounded-full flex items-center justify-center cursor-pointer relative"
                   [ngClass]="{
-                     'bg-blue-700 text-white' :  calendarService.checkDateForToday(day.fullDate),
-                     'text-slate-400' : !day.is_current
-                    }"
+                    'bg-blue-700 text-white': calendarService.checkDateForToday(day.fullDate),
+                    'text-slate-400': !day.is_current,
+                    'bg-blue-200': calendarService.currentFullDate == day.fullDate,
+                  }"
+                  (click)="gotoDay(day)"
                 >
                   <p class="index text-[1.2rem]">{{ day.dayIndex }}</p>
+                  @if (checkIfEventExistOnDay(day.fullDate)) {
+                    <span
+                      class="badge absolute w-[0.65rem] aspect-square rounded-full bg-red-600 top-[calc(0.5rem/2)] right-0"
+                    ></span>
+                  }
                 </div>
               }
             </div>
