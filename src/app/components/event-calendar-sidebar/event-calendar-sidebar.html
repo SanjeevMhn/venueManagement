@@ -55,7 +55,7 @@
                   class="day aspect-square rounded-full flex items-center justify-center cursor-pointer relative"
                   [ngClass]="{
                     'bg-blue-700 text-white': calendarService.checkDateForToday(day.fullDate),
-                    'text-slate-400': !day.is_current,
+                    'invisible pointer-events-none': !day.is_current,
                     'bg-blue-200': calendarService.currentFullDate == day.fullDate,
                   }"
                   (click)="gotoDay(day)"

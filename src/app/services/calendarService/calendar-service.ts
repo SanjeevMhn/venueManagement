@@ -60,7 +60,17 @@ export class CalendarService {
           this.selectedWeek$.next(this.currentWeek + 1);
           if (view == 'day') {
             let dayIndex = new Date().getDay();
+            let day = new Date().getDate();
             this.dayIndexCounter.next(dayIndex);
+            let date =
+              currentMonth.split('-')[0] +
+              '-' +
+              currentMonth.split('-')[1].toString().padStart(2, '0') +
+              '-' +
+              day.toString().padStart(2, '0');
+            requestAnimationFrame(() => {
+              this.currentMonthFormControl.setValue(date);
+            });
           }
         } else {
           this.selectedWeek$.next(1);
@@ -217,6 +227,27 @@ export class CalendarService {
     this.dayIndexCounter,
     this.getWeeks$,
   ]).pipe(
+    tap(([view, index, weeks]) => {
+      if (weeks.week == null || !weeks.group[weeks.week - 1]) {
+        this.currentFullDate = weeks.group[0].find((week) => week.dayIndex == 1)!.fullDate;
+      } else {
+        if (view) {
+          this.currentFullDate = weeks.group[weeks.week - 1].find(
+            (week) => week.day == index,
+          )?.fullDate;
+        } else {
+          if (weeks.group[weeks.week - 1].find((week) => week.day == 0)?.is_current) {
+            this.currentFullDate = weeks.group[weeks.week - 1].find(
+              (week) => week.day == 0,
+            )?.fullDate;
+          } else {
+            this.currentFullDate = weeks.group[weeks.week - 1].find(
+              (week) => week.is_current,
+            )?.fullDate;
+          }
+        }
+      }
+    }),
     map(([view, index, weeks]) => {
       return view
         ? weeks.week == null
@@ -271,10 +302,6 @@ export class CalendarService {
       }
       if (week == 'current') {
         this.selectedWeek$.next(this.currentWeek + 1);
-        if (this.view$.getValue() == 'day') {
-          let dayIndex = new Date().getDay();
-          this.dayIndexCounter.next(dayIndex);
-        }
       }
     }
   }

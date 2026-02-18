@@ -33,8 +33,8 @@
     </div>
 
     @if (calendarService.viewChange$ | async; as change) {
-      <div class="form-group relative isolate bg-white">
-        @if (change.view == 'month') {
+      @if (change.view == 'month') {
+        <div class="form-group relative isolate bg-white">
           <input
             class="date-input z-2 border border-slate-300 p-[0.5rem_1.2rem] cursor-pointer"
             type="month"
@@ -43,7 +43,14 @@
             [formControl]="calendarService.currentMonthFormControl"
             (change)="calendarService.changeMonth($event, 'start')"
           />
-        } @else {
+          <span
+            class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute top-[50%] transform-[translateY(-50%)] right-[0.8rem] z-1"
+          >
+            <lucide-angular class="w-full aspect-square text-slate-800" [img]="calendar" />
+          </span>
+        </div>
+      }
+      <!-- @else {
           <input
             class="date-input z-2 border border-slate-300 p-[0.5rem_1.2rem] cursor-pointer"
             type="date"
@@ -52,14 +59,8 @@
             [formControl]="calendarService.currentMonthFormControl"
             (change)="gotoDay($event)"
           />
-        }
+        } -->
 
-        <span
-          class="icon-container w-[2rem] aspect-square flex items-center justify-center absolute top-[50%] transform-[translateY(-50%)] right-[0.8rem] z-1"
-        >
-          <lucide-angular class="w-full aspect-square text-slate-800" [img]="calendar" />
-        </span>
-      </div>
       <div
         class="view-controller inline-flex items-center text-[1.5rem] md:ml-auto [&>*]:cursor-pointer"
       >
